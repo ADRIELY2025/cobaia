@@ -1,9 +1,9 @@
 {
-  "name": "cobaia",
+  "name": "jaiminho3",
   "version": "1.0.0",
   "description": "Repositório de apoio à aula Técnicas de Teste de Software, preparado para apresentação aos alunos do Senac.",
   "license": "MIT",
-  "author": "ADRIELY THAWANY PEREIRA DE OLIVEIRA ",
+  "author": "WILTON WILL DE PAULO",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
