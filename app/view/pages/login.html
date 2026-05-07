@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Autenticação do Sistema</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 420px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+
+    .login-header {
+      padding: 1.5rem 1.75rem 1.25rem;
+      border-bottom: 1px solid #f0f2f5;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #1D9E75;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon i { color: #fff; font-size: 20px; }
+
+    .logo-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    .login-subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .login-body {
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+
+    .field-group label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .field-inner { position: relative; }
+
+    .field-inner .fi-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+
+    .field-inner input {
+      width: 100%;
+      padding: 10px 38px 10px 38px;
+      font-size: 14px;
+      font-family: 'Sora', sans-serif;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      color: #1a1a2e;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .field-inner input:focus {
+      border-color: #1D9E75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.12);
+      background: #fff;
+    }
+
+    .field-inner input.is-invalid {
+      border-color: #e24b4a;
+      box-shadow: 0 0 0 3px rgba(226,75,74,0.1);
+    }
+
+    .field-inner input::placeholder { color: #b0bec5; }
+
+    .toggle-pw {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #94a3b8;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      border-radius: 4px;
+    }
+
+    .toggle-pw:hover { color: #475569; }
+
+    .forgot { text-align: right; margin-top: -4px; }
+
+    .forgot a {
+      font-size: 12px;
+      color: #1D9E75;
+      text-decoration: none;
+    }
+
+    .forgot a:hover { text-decoration: underline; }
+
+    .login-footer {
+      padding: 0 1.75rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 11px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Sora', sans-serif;
+      background: #1D9E75;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-login:hover { background: #0F6E56; }
+    .btn-login:active { transform: scale(0.98); }
+    .btn-login:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    .btn-login .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #f0f2f5;
+    }
+
+    .btn-google {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'Sora', sans-serif;
+      background: #fff;
+      color: #1a1a2e;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-google:hover { background: #f8fafc; }
+    .btn-google:active { transform: scale(0.98); }
+
+    .alert-msg {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin: 0 1.75rem;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-msg.error {
+      background: #fff0f0;
+      color: #a32d2d;
+      border: 1px solid #f7c1c1;
+    }
+
+    .alert-msg.success {
+      background: #e1f5ee;
+      color: #0F6E56;
+      border: 1px solid #9FE1CB;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <!-- Cabeçalho -->
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="logo-icon">
+          <i class="ti ti-shield-check"></i>
+        </div>
+        <span class="logo-text">Autenticação do sistema</span>
+      </div>
+      <p class="login-subtitle">Acesse com suas credenciais para continuar.</p>
+    </div>
+
+    <!-- Campos -->
+    <div class="login-body">
+      <div class="field-group">
+        <label for="login">Identificação</label>
+        <div class="field-inner">
+          <i class="ti ti-user fi-icon"></i>
+          <input type="text" id="login" name="login" placeholder="CPF, telefone ou e-mail" autocomplete="username"/>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="senha">Senha</label>
+        <div class="field-inner">
+          <i class="ti ti-lock fi-icon"></i>
+          <input type="password" id="senha" name="senha" placeholder="Informe sua senha" autocomplete="current-password"/>
+          <button class="toggle-pw" type="button" id="toggleSenha" aria-label="Mostrar/ocultar senha">
+            <i class="ti ti-eye" id="toggleIcon" style="font-size:16px;"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="forgot">
+        <a href="#" id="linkEsqueceu">Esqueceu a senha?</a>
+      </div>
+    </div>
+
+    <!-- Mensagem de feedback -->
+    <div class="alert-msg" id="alertMsg">
+      <i class="ti ti-alert-circle" style="font-size:16px;flex-shrink:0;"></i>
+      <span id="alertText"></span>
+    </div>
+
+    <!-- Botões -->
+    <div class="login-footer" style="margin-top:1rem;">
+      <button class="btn-login" type="button" id="btnLogin">
+        <div class="spinner" id="spinner"></div>
+        <i class="ti ti-login" id="loginIcon"></i>
+        <span id="loginLabel">Entrar</span>
+      </button>
+
+      <div class="divider">ou</div>
+
+      <button class="btn-google" type="button" id="loginGoogle">
+        <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.83z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.83c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+        </svg>
+        Entrar com Google
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ─── Utilitários ────────────────────────────────────────────────
+    function showAlert(msg, type = 'error') {
+      const box = document.getElementById('alertMsg');
+      const txt = document.getElementById('alertText');
+      box.className = 'alert-msg ' + type;
+      txt.textContent = msg;
+      box.style.display = 'flex';
+    }
+
+    function hideAlert() {
+      document.getElementById('alertMsg').style.display = 'none';
+    }
+
+    function setLoading(on) {
+      const btn = document.getElementById('btnLogin');
+      const spinner = document.getElementById('spinner');
+      const icon = document.getElementById('loginIcon');
+      const label = document.getElementById('loginLabel');
+      btn.disabled = on;
+      spinner.style.display = on ? 'block' : 'none';
+      icon.style.display = on ? 'none' : 'inline';
+      label.textContent = on ? 'Aguarde...' : 'Entrar';
+    }
+
+    function markInvalid(id, invalid) {
+      const el = document.getElementById(id);
+      el.classList.toggle('is-invalid', invalid);
+    }
+
+    // ─── Mostrar/Ocultar senha ───────────────────────────────────────
+    document.getElementById('toggleSenha').addEventListener('click', function () {
+      const input = document.getElementById('senha');
+      const icon = document.getElementById('toggleIcon');
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      icon.className = isHidden ? 'ti ti-eye-off' : 'ti ti-eye';
+    });
+
+    // ─── Limpar validação ao digitar ────────────────────────────────
+    ['login', 'senha'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', function () {
+        markInvalid(id, false);
+        hideAlert();
+      });
+    });
+
+    // ─── Login principal ────────────────────────────────────────────
+    document.getElementById('btnLogin').addEventListener('click', async function () {
+      const login = document.getElementById('login').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      // Validação local
+      let valid = true;
+      if (!login) { markInvalid('login', true); valid = false; }
+      if (!senha) { markInvalid('senha', true); valid = false; }
+      if (!valid) {
+        showAlert('Preencha todos os campos antes de continuar.');
+        return;
+      }
+
+      setLoading(true);
+      hideAlert();
+
+      try {
+        // ── Substitua pela sua chamada real de autenticação ──
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert('Login realizado com sucesso! Redirecionando...', 'success');
+          // Exemplo: salvar token e redirecionar
+          // localStorage.setItem('token', data.token);
+          // window.location.href = '/dashboard';
+        } else {
+          showAlert(data.message || 'Usuário ou senha inválidos.');
+        }
+      } catch (err) {
+        // Simulação de sucesso para demonstração (remova em produção)
+        showAlert('Erro de conexão com o servidor.', 'error');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    // ─── Login com Google ────────────────────────────────────────────
+    document.getElementById('loginGoogle').addEventListener('click', function () {
+      // Substitua pela URL real do seu OAuth Google
+      // window.location.href = '/auth/google';
+      showAlert('Redirecionando para o Google...', 'success');
+      console.log('Login com Google clicado');
+    });
+
+    // ─── Esqueceu a senha ────────────────────────────────────────────
+    document.getElementById('linkEsqueceu').addEventListener('click', function (e) {
+      e.preventDefault();
+      // window.location.href = '/recuperar-senha';
+      showAlert('Funcionalidade de recuperação de senha não configurada.', 'error');
+    });
+
+    // ─── Enter para submeter ─────────────────────────────────────────
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        document.getElementById('btnLogin').click();
+      }
+    });
+  </script>
+</body>
+</html>

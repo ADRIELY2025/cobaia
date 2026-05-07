@@ -5,10 +5,11 @@ declare(strict_types=1);
 arch('todos os arquivos usam strict types')
     ->expect('App')
     ->toUseStrictTypes();
-
+/*adiconar rota cooreta desses dois controllers */
 arch('sem debug no código de produção')
     ->expect('App')
     ->not->toUse(['var_dump', 'dd', 'dump', 'die']);
+    
 
 arch('controllers não acessam banco direto')
     ->expect('app\controller')
