@@ -16,11 +16,31 @@ final class Version20260506190946 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // escreva aqui as alterações
+        $table = $schema->createTable('federative_unit');
+
+        $table->addColumn('id',            'bigint', ['autoincrement' => true, 'unsigned' => true, 'notnull' => true]);
+        $table->addColumn('id_pais',       'bigint', ['unsigned' => true, 'notnull' => true]);
+        $table->addColumn('codigo',        'string', ['length' => 10,  'notnull' => true]);
+        $table->addColumn('nome',          'string', ['length' => 255, 'notnull' => true]);
+        $table->addColumn('sigla',         'string', ['length' => 5,   'notnull' => true]);
+        $table->addColumn('criado_em',     'datetime', ['notnull' => true, 'default' => 'CURRENT_TIMESTAMP']);
+        $table->addColumn('atualizado_em', 'datetime', ['notnull' => true, 'default' => 'CURRENT_TIMESTAMP']);
+
+        $table->setPrimaryKey(['id']);
+        $table->addUniqueIndex(['codigo']);
+        $table->addIndex(['id_pais']);
+
+        $table->addForeignKeyConstraint(
+            'country',
+            ['id_pais'],
+            ['id'],
+            ['onDelete' => 'RESTRICT', 'onUpdate' => 'CASCADE'],
+            'fk_federative_unit_country'
+        );
     }
 
     public function down(Schema $schema): void
     {
-        // escreva aqui o rollback do up()
+        $schema->dropTable('federative_unit');
     }
 }
