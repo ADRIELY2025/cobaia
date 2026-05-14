@@ -7,6 +7,7 @@ $app->get('/home', app\controller\Home::class . ':home')->add(app\middleware\Mid
 $app->get('/login', app\controller\Login::class . ':login')->add(app\middleware\Middleware::web());
 
 $app->group('/authentication', function (Slim\Routing\RouteCollectorProxy $group) {
+    $group->post('/google', app\controller\Login::class . ':google');
     $group->post('/auth', app\controller\Login::class . ':authenticate');
     $group->post('/preregister', app\controller\Login::class . ':preRegister');
 });
@@ -19,13 +20,4 @@ $app->group('/cliente', function (Slim\Routing\RouteCollectorProxy $group) {
     $group->post('/update', app\controller\Customer::class . ':update');
     $group->post('/delete', app\controller\Customer::class . ':delete');
     $group->post('/listingdata', app\controller\Customer::class . ':listingdata');
-});
-$app->group('/supplier', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Supplier::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Supplier::class . ':details');
-    $group->get('/detalhes', app\controller\Supplier::class . ':details');
-    $group->post('/insert', app\controller\Supplier::class . ':insert');
-    $group->post('/update', app\controller\Supplier::class . ':update');
-    $group->post('/delete', app\controller\Supplier::class . ':delete');
-    $group->post('/listingdata', app\controller\Supplier::class . ':listingdata');
 });
