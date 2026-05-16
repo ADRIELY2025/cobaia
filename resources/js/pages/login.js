@@ -2,15 +2,20 @@ import Swal from "sweetalert2";
 import Validate from "../components/validate.js";
 import Requests from "../components/requests.js";
 
+Inputmask('999.999.999-99').mask('#cpf');
+Inputmask('(99) 99999-9999').mask('#telefone');
+
 const mdPreRegister = document.getElementById('mdPreRegister');
 const buttonPreRegister = document.getElementById('buttonPreRegister');
 const buttonLogin = document.getElementById('buttonLogin');
 
 
-
 mdPreRegister.addEventListener('click', () => {
     $('#modalPreRegisterUser').modal('show');
 });
+
+
+
 
 buttonLogin.addEventListener('click', async () => {
     const valid = Validate.SetForm('form').Validate();

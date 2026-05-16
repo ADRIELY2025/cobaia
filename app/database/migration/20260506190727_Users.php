@@ -11,12 +11,12 @@ final class Version20260506190727 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'User';
+        return 'Users';
     }
 
     public function up(Schema $schema): void
-     {
-        $table = $schema->createTable('user');
+    {
+        $table = $schema->createTable('users');
         $table->addColumn('id',            'bigint', ['autoincrement' => true]);
         $table->addColumn('nome', 'text',  ['default' => '']);
         $table->addColumn('sobrenome', 'text',  ['default' => '']);
@@ -35,6 +35,6 @@ final class Version20260506190727 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $schema->dropTable('user');
+        $schema->dropTable('users');
     }
 }

@@ -11,12 +11,12 @@ final class Version20260506190605 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Customer';
+        return 'Supplier';
     }
 
     public function up(Schema $schema): void
     {
-        $table = $schema->createTable('customer');
+        $table = $schema->createTable('supplier');
 
         $table->addColumn('id',            'bigint', ['autoincrement' => true]);
         $table->addColumn('nome_fantasia', 'string',  ['length' => 255]);
@@ -36,6 +36,6 @@ final class Version20260506190605 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $schema->dropTable('customer');
+        $schema->dropTable('supplier');
     }
 }

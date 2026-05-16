@@ -6,10 +6,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ vite('resources/css/app.css') }}
     <title>Document</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        * {
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0, 0, 0, 0.08);
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .card-header {
+            background: #1a1f36;
+            color: #fff;
+            border-radius: 16px 16px 0 0 !important;
+            padding: 1.75rem;
+            border: none;
+        }
+
+        .card-header h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.4px;
+            margin: 0;
+        }
+
+        .card-header p {
+            font-size: 13px;
+            color: #8b92b0;
+            margin: 6px 0 0;
+        }
+
+        .card-body {
+            padding: 1.75rem;
+        }
+
+        .card-footer {
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+            padding: 1.25rem 1.75rem;
+            border-radius: 0 0 16px 16px !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-floating .form-control {
+            border-radius: 10px;
+            border: 1px solid #e0e4ef;
+            font-size: 14px;
+            background: #fafbfd;
+        }
+
+        .form-floating .form-control:focus {
+            border-color: #4f8ef7;
+            box-shadow: 0 0 0 3px rgba(79, 142, 247, 0.12);
+            background: #fff;
+        }
+
+        .form-floating label {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .btn-entrar {
+            background: #2563eb;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 26px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.15s, transform 0.1s;
+            cursor: pointer;
+        }
+
+        .btn-entrar:hover {
+            background: #1d4ed8;
+            transform: scale(0.98);
+        }
+
+        .btn-cadastro {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 10px 18px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        .btn-cadastro:hover {
+            background: #dcfce7;
+        }
+
+        .pre-cadastro-row {
+            font-size: 13px;
+            color: #999;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .divider-v {
+            border-left: 1px solid #e0e4ef;
+            height: 32px;
+        }
+
+        .google-btn {
+            background: #fff;
+            border: 1px solid #e0e4ef;
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 13px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+
+        .google-btn:hover {
+            background: #f8f9ff;
+        }
+    </style>
 </head>
 
 <body>
     <form id="form">
+
+        <!-- Modal Pré-cadastro -->
         <div class="modal fade" id="modalPreRegisterUser" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="modalPreRegisterUserLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -80,56 +237,57 @@
             </div>
         </div>
 
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="card mt-3">
-                        <div class="card-header">
-                            Autenticação do sistema
+        <!-- Login -->
+        <div class="login-wrapper">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Autenticação do sistema</h2>
+                    <p>Informe suas credenciais para continuar</p>
+                </div>
+                <div class="card-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="login" name="login"
+                            placeholder="name@example.com" autofocus required>
+                        <label for="login">Login, CPF ou Telefone ou E-mail *</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="senha" name="senha"
+                            placeholder="name@example.com" required>
+                        <label for="senha">Informe sua senha *</label>
+                    </div>
+                    <div class="pre-cadastro-row">
+                        Ainda não tem conta?
+                        <button type="button" class="btn-cadastro" id="mdPreRegister">
+                            <i class="ti ti-user-plus" style="font-size:15px;" aria-hidden="true"></i>
+                            Faça seu pré-cadastro
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn-entrar" id="buttonLogin">
+                        <i class="ti ti-login" style="font-size:16px;" aria-hidden="true"></i>
+                        Entrar
+                    </button>
+                    <div class="divider-v"></div>
+                    <span style="font-size:12px; color:#bbb;">ou continue com</span>
+                    <div class="btn">
+                        <div id="g_id_onload"
+                            data-client_id="1092615579925-alk6qicvkfa55341f5blcqr454j0vsge.apps.googleusercontent.com"
+                            data-context="signin" data-ux_mode="popup"
+                            data-login_uri="/authentication/google" data-itp_support="true">
                         </div>
-                        <div class="card-body">
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="login" name="login"
-                                    placeholder="name@example.com" autofocus required>
-                                <label for="login">Login, CPF ou Telefone ou E-mail *</label>
-                            </div>
-                            <div class="form-floating mb-3">
-                                <input type="password" class="form-control" id="senha" name="senha"
-                                    placeholder="name@example.com" required>
-                                <label for="senha">Informe sua senha *</label>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    Ainda não tenho conta faça aqui seu:
-                                    <button type="button" class="btn btn-link" id="mdPreRegister">
-                                        Pré-cadastro
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="button" class="btn btn-success" id="buttonLogin">
-                                Login
-                            </button>
-                            <div class="btn">
-                                <div id="g_id_onload"
-                                    data-client_id="346079394633-hd72jdjgaurl4poo0os8d1a374aojm0v.apps.googleusercontent.com"
-                                    data-context="signin" data-ux_mode="popup" data-login_uri="/authentication/google"
-                                    data-itp_support="true">
-                                </div>
-
-                                <div class="g_id_signin" data-type="standard" data-shape="rectangular"
-                                    data-theme="outline" data-text="signin_with" data-size="large"
-                                    data-logo_alignment="left">
-                                </div>
-                            </div>
+                        <div class="g_id_signin" data-type="standard" data-shape="rectangular"
+                            data-theme="outline" data-text="signin_with" data-size="large"
+                            data-logo_alignment="left">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
         <script src="https://accounts.google.com/gsi/client" async></script>
     </form>
+
     {{ vite('resources/js/app.js') }}
     {{ vite('resources/js/pages/login.js') }}
 </body>
