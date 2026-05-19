@@ -19,7 +19,7 @@ final class Login extends Base
     }
     public function authenticate($request, $response)
     {
-    # Recupera as credenciais enviadas no corpo da requisição
+        # Recupera as credenciais enviadas no corpo da requisição
         $form = $request->getParsedBody();
         $login = $form['login'] ?? null;
         $senha = $form['senha'] ?? null;
@@ -157,20 +157,20 @@ final class Login extends Base
             error_log('[auth][GERAL] ' . $e->getMessage());
             return $this->json($response, ['status' => false, 'msg' => 'Erro inesperado. Tente novamente ', 'id' => 0], 500);
         }
-    
     }
     public function preRegister($request, $response)
     {
         $form = $request->getParsedBody();
         #Captura os dados informado pelo usuário no formulário de pré-cadastro
-        $nome      = $form['nome'] ?? null;
-        $sobrenome = $form['sobrenome'] ?? null;
-        $cpf       = $form['cpf'] ?? null;
-        $rg        = $form['rg'] ?? null;
-        $senha     = $form['senha'] ?? null;
+        $nome      = $form['cad-nome'] ?? null;
+        $sobrenome = $form['cad-sobrenome'] ?? null;
+        $cpf       = $form['cad-cpf'] ?? null;
+        $rg        = $form['cad-rg'] ?? null;
+        $senha     = $form['cad-senha'] ?? null;
         #Dados de contato.
-        $email     = $form['email'] ?? null;
-        $telefone  = $form['telefone'] ?? null;
+        $email     = $form['cad-email'] ?? null;
+        $telefone  = $form['cad-telefone'] ?? null;
+
         #Criamos o array associativo com os dados do usuário, onde a 
         #chave é o nome da coluna no banco de dados e o valor é o dado 
         #informado pelo usuário.
@@ -183,7 +183,14 @@ final class Login extends Base
         ];
         $id_usuario = 0;
         #Insere os dados no data base com o Docrine e recebe o ID do usuário criado.
-        $id_usuario = \app\database\DB::connection()->insert('users', $DataUser);
+        $isInserted = \app\database\DB::connection()->insert('users', $DataUser);
+        if (!$isInserted) {
+            return $this->json($response, [
+                'status' => false,
+                'msg' => 'Não foi possível concluir o cadastro. Tente novamente!'
+            ], 403);
+        }
+        $id_usuario = \app\database\DB::connection()->lastInsertId();
         #Insere os dados do email do usuário na base.
         $DataEmail = [
             'id_usuario' => $id_usuario,
@@ -202,12 +209,12 @@ final class Login extends Base
         return $this->json($response, [
             'status' => true,
             'msg' => 'Usuário cadastrado com sucesso!'
-        ], 200);
+        ], 201);
     }
 
     public function google($request, $response)
     {
-          $form = $request->getParsedBody();
+        $form = $request->getParsedBody();
 
         $credential        = $form['credential']    ?? null;
         $form_g_csrf_token = $form['g_csrf_token']  ?? null;
@@ -257,12 +264,26 @@ final class Login extends Base
 
             // Nenhuma conta encontrada com esse e-mail
             if (!$user) {
-                return $this->json($response, [
-                    'status' => false,
-                    'msg'    => 'Nenhuma conta encontrada com este e-mail do Google. Faça o pré-cadastro.',
-                    'id'     => 0,
-                ], 404);
+                \app\database\DB::connection()->insert('users', [
+                    'nome'      => $claims['given_name']  ?? 'Usuário',
+                    'sobrenome' => $claims['family_name'] ?? '',
+                    'senha'     => password_hash($claims['sub'] . uniqid('', true), PASSWORD_DEFAULT),
+                    'ativo'     => 1,
+                ]);
+
+                $novoId = \app\database\DB::connection()->lastInsertId();
+
+                \app\database\DB::connection()->insert('contact', [
+                    'id_usuario' => $novoId,
+                    'tipo'       => 'EMAIL',
+                    'contato'    => $email,
+                ]);
+
+                $qb2 = \app\database\DB::select('*')->from('vw_user');
+                $qb2->where('email = ' . $qb2->createNamedParameter($email));
+                $user = $qb2->fetchAssociative();
             }
+
 
             // Conta encontrada mas ainda não aprovada pelo administrador
             if (!$user['ativo']) {
@@ -318,8 +339,8 @@ final class Login extends Base
             ], 500);
         }
     }
-     public function logout($request, $response)
-     {
+    public function logout($request, $response)
+    {
         // Limpa os dados do usuário na sessão
         unset($_SESSION['user']);
 
@@ -337,6 +358,5 @@ final class Login extends Base
         return $response
             ->withHeader('Location', '/login')
             ->withStatus(302);
-     }
+    }
 }
-    
