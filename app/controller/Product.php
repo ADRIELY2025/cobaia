@@ -45,7 +45,7 @@ final class Enterprise extends Base
             'razao_social' => $form['nomeLegal'] ?? '',
             'cnpj' => $form['numeroDocumento'] ?? '',
             'ie' => $form['registroSecundario'] ?? '',
-            #'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
+            'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
             'ativo' => ($form['ativo'] === 'true') ? true : false
         ];
         try {

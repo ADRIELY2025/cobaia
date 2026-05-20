@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace app\controller;
 
-final class Enterprise extends Base
+final class Users extends Base
 {
     public function list($request, $response)
     {
         return $this->getTwig()
-            ->render($response, $this->setView('list-enterprise'), [
-                'titulo' => 'Lista de empresas',
+            ->render($response, $this->setView('list-users'), [
+                'titulo' => 'Lista de usuários',
             ])
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
@@ -19,20 +19,20 @@ final class Enterprise extends Base
     {
         $id = $args['id'] ?? null;
         $action = ($id === null) ? 'c' : 'e';
-        $enterprise = [];
+        $user = [];
         if (!is_null($id)) {
-            $qb = \app\database\DB::select('*')->from('enterprise');
+            $qb = \app\database\DB::select('*')->from('users');
 
-            $enterprise = $qb
+            $user = $qb
                 ->where('id = ' . $qb->createPositionalParameter($id, \Doctrine\DBAL\ParameterType::INTEGER))
                 ->fetchAssociative();
         }
         return $this->getTwig()
-            ->render($response, $this->setView('enterprise'), [
-                'titulo' => 'Detalhes da empresa',
+            ->render($response, $this->setView('users'), [
+                'titulo' => 'Detalhes do usuário',
                 'id' => $id,
                 'action' => $action,
-                'enterprise' => $enterprise
+                'user' => $user
             ])
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
@@ -41,19 +41,20 @@ final class Enterprise extends Base
     {
         $form = $request->getParsedBody();
         $FieldsAndValues = [
-            'fantasia' => $form['nomeExibicao'],
-            'razao_social' => $form['nomeLegal'] ?? '',
-            'cnpj' => $form['numeroDocumento'] ?? '',
-            'ie' => $form['registroSecundario'] ?? '',
-            #'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
+            'Nome' => $form['nome'],
+            'sobrenome' => $form['sobrenome'] ?? '',
+            'cpf' => $form['cpf'] ?? '',
+            'rg' => $form['rg'] ?? '',
+            'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
+            'administrador' => ($form['administrador'] === 'true') ? true : false,
             'ativo' => ($form['ativo'] === 'true') ? true : false
         ];
         try {
-            $IsInserted = \app\database\DB::connection()->insert('enterprise', $FieldsAndValues);
+            $IsInserted = \app\database\DB::connection()->insert('users', $FieldsAndValues);
             if (!$IsInserted) {
                 return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $IsInserted, 'id' => 0], 500);
             }
-            $id = \app\database\DB::select('id')->from('enterprise')->fetchAssociative();
+            $id = \app\database\DB::select('id')->from('users')->fetchAssociative();
 
             return $this->json($response, ['status' => true, 'msg' => 'Salvo com sucesso!', 'id' => $id['id']], 201);
         } catch (\Exception $e) {
@@ -68,15 +69,16 @@ final class Enterprise extends Base
             return $this->json($response, ['status' => false, 'msg' => 'Por favor informe o ID do registro', 'id' => 0], 403);
         }
         $FieldsAndValues = [
-            'fantasia' => $form['nomeExibicao'] ?? null,
-            'razao_social' => $form['nomeLegal'] ?? null,
-            'cnpj' => $form['numeroDocumento'] ?? null,
-            'ie' => $form['registroSecundario'] ?? null,
-            'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
+            'Nome' => $form['nome'] ?? null,
+            'sobrenome' => $form['sobrenome'] ?? null,
+            'cpf' => $form['cpf'] ?? null,
+            'rg' => $form['rg'] ?? null,
+            'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
+            'administrador' => ($form['administrador'] === 'true') ? true : false,
             'ativo' => ($form['ativo'] === 'true') ? true : false
         ];
         try {
-            $IsUpdated = \app\database\DB::connection()->update('enterprise', $FieldsAndValues, ['id' => $id]);
+            $IsUpdated = \app\database\DB::connection()->update('users', $FieldsAndValues, ['id' => $id]);
             if (!$IsUpdated) {
                 return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $IsUpdated, 'id' => 0], 403);
             }
@@ -93,7 +95,7 @@ final class Enterprise extends Base
             return $this->json($response, ['status' => false, 'msg' => 'Informe o código da empresa', 'id' => 0], 403);
         }
         try {
-            $IsDeleted = \app\database\DB::connection()->delete('enterprise', ['id' => $id]);
+            $IsDeleted = \app\database\DB::connection()->delete('users', ['id' => $id]);
             if (!$IsDeleted) {
                 return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $IsDeleted, 'id' => $id], 403);
             }
@@ -113,12 +115,14 @@ final class Enterprise extends Base
         # Whitelist de colunas — proteção contra SQL injection no orderBy
         $columns = [
             0 => 'id',
-            1 => 'fantasia',
-            2 => 'cnpj',
-            3 => 'ie',
-            4 => 'nascimento_fundacao',
-            5 => 'criado_em',
-            6 => 'atualizado_em',
+            1 => 'nome',
+            2 => 'sobrenome',
+            3 => 'cpf',
+            4 => 'rg',
+            5 => 'senha',
+            6 => 'ativo',
+            7 => 'criado_em',
+            8 => 'atualizado_em',
         ];
 
         $posField = (isset($form['order'][0]['column']) && isset($columns[(int) $form['order'][0]['column']]))
@@ -133,21 +137,20 @@ final class Enterprise extends Base
         try {
             # Total geral DataTables: recordsTotal
             $totalRecords = (int) \app\database\DB::select('COUNT(*)')
-                ->from('enterprise')
+                ->from('users')
                 ->fetchOne();
 
             # Query principal com WHERE opcional
-            $query = \app\database\DB::select('*')->from('enterprise');
+            $query = \app\database\DB::select('*')->from('users');
 
             if (!is_null($term) && $term !== '') {
                 $query->setParameter('term', '%' . $term . '%');
 
                 $query->where('CAST(id AS TEXT) ILIKE :term')
-                    ->orWhere('fantasia ILIKE :term')
-                    ->orWhere('razao_social ILIKE :term')
-                    ->orWhere('cnpj ILIKE :term')
-                    ->orWhere('ie ILIKE :term')
-                    ->orWhere("TO_CHAR(nascimento_fundacao, 'DD/MM/YYYY') ILIKE :term")
+                    ->orWhere('nome ILIKE :term')
+                    ->orWhere('sobrenome ILIKE :term')
+                    ->orWhere('cpf ILIKE :term')
+                    ->orWhere('rg ILIKE :term')
                     ->orWhere("TO_CHAR(criado_em, 'DD/MM/YYYY HH24:MI:SS') ILIKE :term")
                     ->orWhere("TO_CHAR(atualizado_em, 'DD/MM/YYYY HH24:MI:SS') ILIKE :term");
             }
@@ -158,7 +161,7 @@ final class Enterprise extends Base
                 ->fetchOne();
 
             # Resultados paginados e ordenados
-            $enterprises = $query
+            $users = $query
                 ->orderBy($orderField, $orderType)
                 ->setFirstResult($start)
                 ->setMaxResults($length)
@@ -166,20 +169,20 @@ final class Enterprise extends Base
 
             # Formatação para o DataTables
             $rows = [];
-            foreach ($enterprises as $key => $value) {
-                $cnpj        = $value['cnpj']         ?? '';
-                $fantasia   = $value['fantasia']    ?? '';
-                $razaoSocial = $value['razao_social']  ?? '';
+            foreach ($users  as $key => $value) {
+                $cpf        = $value['cpf']         ?? '';
+                $nome   = $value['nome']    ?? '';
+                $sobrenome = $value['sobrenome']  ?? '';
 
-                $nomeCompleto = (strlen($cnpj) <= 14)
-                    ? trim($fantasia . ' ' . $razaoSocial)
-                    : $fantasia;
+                $nomeCompleto = (strlen($cpf) <= 11)
+                    ? trim($nome . ' ' . $sobrenome)
+                    : $nome;
 
                 $rows[$key] = [
                     $value['id'],
                     $nomeCompleto,
-                    $cnpj,
-                    (new \DateTime($value['nascimento_fundacao'] ?? date('Y-m-d')))->format('d/m/Y'),
+                    $cpf,
+                    ($value['administrador'] === true) ? 'Administrador' : 'Comum',
                     ($value['ativo'] === true) ? 'Ativo' : 'Inativo',
                     (new \DateTime($value['criado_em']))->format('d/m/Y H:i:s'),
                     (new \DateTime($value['atualizado_em']))->format('d/m/Y H:i:s'),
