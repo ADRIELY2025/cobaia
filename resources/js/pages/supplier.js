@@ -30,29 +30,29 @@ async function applyChanges() {
     const requests = new Requests();
     try {
         const response = (Action.value !== 'e')
-            ? await requests.setForm('form').post('/usuario/insert') :
-            await requests.setForm('form').post('/usuario/update');
+            ? await requests.setForm('form').post('/fornecedor/insert') :
+            await requests.setForm('form').post('/fornecedor/update');
         if (!response.status) {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: response.msg || 'Ocorreu um erro ao salvar os dados do usuário.',
+                text: response.msg || 'Ocorreu um erro ao salvar os dados do fornecedor.',
                 timer: 3000,
                 timerProgressBar: true,
             });
             return;
         }
         const baseUrl = window.location.origin;
-        const redirectUrl = `${baseUrl}/usuario/detalhes/${response.id}`;
+        const redirectUrl = `${baseUrl}/fornecedor/detalhes/${response.id}`;
         if (Action.value === 'e') {
             Swal.fire({
                 icon: 'success',
                 title: 'Sucesso',
-                text: response.msg || 'Dados do usuário alterados com sucesso.',
+                text: response.msg || 'Dados do fornecedor alterados com sucesso.',
                 timer: 3000,
                 timerProgressBar: true,
             }).then(() => {
-                window.location.href = '/usuario/lista';
+                window.location.href = '/fornecedor/lista';
             });
             return;
         }
@@ -62,7 +62,7 @@ async function applyChanges() {
         Swal.fire({
             icon: 'success',
             title: 'Sucesso',
-            text: response.msg || 'Usuário salvo com sucesso!',
+            text: response.msg || 'Dados do fornecedor salvos com sucesso!',
             timer: 3000,
             timerProgressBar: true,
         });
@@ -80,11 +80,11 @@ async function applyChanges() {
     }
 }
 
-Cpf.addEventListener('blur', async () => {
-    if (Cpf.value.trim() === '' || Cpf.value.replace(/\D/g, '').length < 11) {
+Cnpj.addEventListener('blur', async () => {
+    if (Cnpj.value.trim() === '' || Cnpj.value.replace(/\D/g, '').length < 14) {
         return;
     }
-    const findCompany = new FindCompany({ cpfField: 'numeroDocumento', cnaeValue: 'cnae', cnaeSearch: 'codigoAtividadeEconomica' })
+    const findCompany = new FindCompany({ cnpjField: 'numeroDocumento', cnaeValue: 'cnae', cnaeSearch: 'codigoAtividadeEconomica' })
     await findCompany.FindCompanyData();
 });
 

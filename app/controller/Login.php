@@ -208,7 +208,8 @@ final class Login extends Base
         #Retorna a resposta de sucesso ao cliente
         return $this->json($response, [
             'status' => true,
-            'msg' => 'Usuário cadastrado com sucesso!'
+            'msg' => 'Usuário cadastrado com sucesso!',
+            'id' => $id_usuario
         ], 201);
     }
 

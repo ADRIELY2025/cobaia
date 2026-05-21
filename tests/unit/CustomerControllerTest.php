@@ -6,9 +6,8 @@ use Slim\Psr7\Factory\RequestFactory;
 use Slim\Psr7\Factory\ResponseFactory;
 
 test('insert com dados válidos retorna 201 status true', function () {
-
     $request = (new RequestFactory())
-        ->createRequest('POST', '/empresa/insert')
+        ->createRequest('POST', '/cliente/insert')
         ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
         ->withParsedBody([
             'nomeExibicao' => 'Belo',
@@ -21,7 +20,7 @@ test('insert com dados válidos retorna 201 status true', function () {
 
     $response = (new ResponseFactory())->createResponse();
 
-    $result = (new app\controller\Enterprise())->insert($request, $response);
+    $result = (new app\controller\Customer())->insert($request, $response);
 
     $result->getBody()->rewind();
 

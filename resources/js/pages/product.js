@@ -1,68 +1,66 @@
-import FindCompany from "../components/find-company.js";
 import Requests from "../components/requests.js";
 import Validate from "../components/validate.js";
 
 const Action = document.getElementById('action');
-const Id = document.getElementById('id');
-const Cnpj = document.getElementById('numeroDocumento');
+const Id     = document.getElementById('id');
 const Insert = document.getElementById('insert');
-Inputmask({ mask: ['999.999.999-99', '99.999.999/9999-99'], keepStatic: true }).mask("#numeroDocumento");
-Inputmask({ mask: ['99/99/9999'] }).mask("#dataRegistro");
-$('#dataRegistro').flatpickr({
-    enableTime: false,
-    dateFormat: "d/m/Y",
-    locale: "pt"
-});
 
 async function applyChanges() {
     $('button').prop('disabled', true);
+
     const IsValid = Validate.SetForm('form').Validate();
     if (!IsValid) {
         Swal.fire({
             icon: 'error',
             title: 'Erro',
-            text: `Por favor, corrija os erros no formulário antes de salvar.`,
+            text: 'Por favor, corrija os erros no formulário antes de salvar.',
             timer: 3000,
             timerProgressBar: true,
         });
         return;
     }
+
     const requests = new Requests();
     try {
         const response = (Action.value !== 'e')
-            ? await requests.setForm('form').post('/usuario/insert') :
-            await requests.setForm('form').post('/usuario/update');
+            ? await requests.setForm('form').post('/produto/insert')
+            : await requests.setForm('form').post('/produto/update');
+
         if (!response.status) {
             Swal.fire({
                 icon: 'error',
                 title: 'Erro',
-                text: response.msg || 'Ocorreu um erro ao salvar os dados do usuário.',
+                text: response.msg || 'Ocorreu um erro ao salvar os dados do produto.',
                 timer: 3000,
                 timerProgressBar: true,
             });
             return;
         }
-        const baseUrl = window.location.origin;
-        const redirectUrl = `${baseUrl}/usuario/detalhes/${response.id}`;
+
+        const baseUrl     = window.location.origin;
+        const redirectUrl = `${baseUrl}/produto/detalhes/${response.id}`;
+
         if (Action.value === 'e') {
             Swal.fire({
                 icon: 'success',
                 title: 'Sucesso',
-                text: response.msg || 'Dados do usuário alterados com sucesso.',
+                text: response.msg || 'Dados do produto alterados com sucesso.',
                 timer: 3000,
                 timerProgressBar: true,
             }).then(() => {
-                window.location.href = '/usuario/lista';
+                window.location.href = '/produto/lista';
             });
             return;
         }
+
         Action.value = 'e';
-        Id.value = response.id;
+        Id.value     = response.id;
         window.history.pushState({}, '', redirectUrl);
+
         Swal.fire({
             icon: 'success',
             title: 'Sucesso',
-            text: response.msg || 'Usuário salvo com sucesso!',
+            text: response.msg || 'Produto salvo com sucesso!',
             timer: 3000,
             timerProgressBar: true,
         });
@@ -79,14 +77,6 @@ async function applyChanges() {
         $('button, input, checkbox').prop('disabled', false);
     }
 }
-
-Cpf.addEventListener('blur', async () => {
-    if (Cpf.value.trim() === '' || Cpf.value.replace(/\D/g, '').length < 11) {
-        return;
-    }
-    const findCompany = new FindCompany({ cpfField: 'numeroDocumento', cnaeValue: 'cnae', cnaeSearch: 'codigoAtividadeEconomica' })
-    await findCompany.FindCompanyData();
-});
 
 Insert.addEventListener('click', async () => {
     await applyChanges();

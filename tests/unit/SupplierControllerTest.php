@@ -8,20 +8,20 @@ use Slim\Psr7\Factory\ResponseFactory;
 test('insert com dados válidos retorna 201 status true', function () {
 
     $request = (new RequestFactory())
-        ->createRequest('POST', '/empresa/insert')
+        ->createRequest('POST', '/fornecedor/insert')
         ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
         ->withParsedBody([
-            'nomeExibicao' => 'Belo',
-            'nomeLegal' => 'Belo LTDA',
-            'numeroDocumento' => '12.123.123/0001-12',
+            'nomeExibicao' => 'Wilton',
+            'nomeLegal' => 'Willl de Paulo',
+            'numeroDocumento' => '123.123.123-12',
             'registroSecundario' => '123456',
-            'dataRegistro' => '01/01/2000',
+            'dataRegistro' => '01/01/2000', 
             'ativo' => 'true'
         ]);
 
     $response = (new ResponseFactory())->createResponse();
 
-    $result = (new app\controller\Enterprise())->insert($request, $response);
+    $result = (new app\controller\Supplier())->insert($request, $response);
 
     $result->getBody()->rewind();
 
@@ -31,6 +31,7 @@ test('insert com dados válidos retorna 201 status true', function () {
     expect($result->getStatusCode())->toBe(201);
 
     expect($json['msg'])->toContain('Salvo com sucesso!');
-
+    
     expect($json['status'])->toBeTrue();
+
 });

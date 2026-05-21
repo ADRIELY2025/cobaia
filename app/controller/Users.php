@@ -41,13 +41,13 @@ final class Users extends Base
     {
         $form = $request->getParsedBody();
         $FieldsAndValues = [
-            'Nome' => $form['nome'],
-            'sobrenome' => $form['sobrenome'] ?? '',
-            'cpf' => $form['cpf'] ?? '',
-            'rg' => $form['rg'] ?? '',
+            'nome' => $form['nomeExibicao'],
+            'sobrenome' => $form['nomeLegal'] ?? '',
+            'cpf' => $form['numeroDocumento'] ?? '',
+            'rg' => $form['registroSecundario'] ?? '',
             'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
-            'administrador' => ($form['administrador'] === 'true') ? true : false,
-            'ativo' => ($form['ativo'] === 'true') ? true : false
+            'administrador' => ($form['administrador'] === 'true') ? 'true' : 'false',
+            'ativo' => ($form['ativo'] === 'true') ? 'true' : 'false'
         ];
         try {
             $IsInserted = \app\database\DB::connection()->insert('users', $FieldsAndValues);
@@ -58,7 +58,7 @@ final class Users extends Base
 
             return $this->json($response, ['status' => true, 'msg' => 'Salvo com sucesso!', 'id' => $id['id']], 201);
         } catch (\Exception $e) {
-            return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
+            return $this->json($response, ['status' => false, 'msg' => 'Restrição:' . $e->getMessage(), 'id' => 0], 500);
         }
     }
     public function update($request, $response)
@@ -69,20 +69,20 @@ final class Users extends Base
             return $this->json($response, ['status' => false, 'msg' => 'Por favor informe o ID do registro', 'id' => 0], 403);
         }
         $FieldsAndValues = [
-            'Nome' => $form['nome'] ?? null,
-            'sobrenome' => $form['sobrenome'] ?? null,
-            'cpf' => $form['cpf'] ?? null,
-            'rg' => $form['rg'] ?? null,
+            'nome' => $form['nomeExibicao'] ?? null,
+            'sobrenome' => $form['nomeLegal'] ?? null,
+            'cpf' => $form['numeroDocumento'] ?? null,
+            'rg' => $form['registroSecundario'] ?? null,
             'senha' => password_hash($form['senha'], PASSWORD_DEFAULT),
-            'administrador' => ($form['administrador'] === 'true') ? true : false,
-            'ativo' => ($form['ativo'] === 'true') ? true : false
+            'administrador' => ($form['administrador'] === 'true') ? 'true' : 'false',
+            'ativo' => ($form['ativo'] === 'true') ? 'true' : 'false'
         ];
         try {
             $IsUpdated = \app\database\DB::connection()->update('users', $FieldsAndValues, ['id' => $id]);
             if (!$IsUpdated) {
                 return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $IsUpdated, 'id' => 0], 403);
             }
-            return $this->json($response, ['status' => true, 'msg' => 'Alterado com sucesso!', 'id' => $id], 201);
+            return $this->json($response, ['status' => true, 'msg' => 'Alterado com sucesso!', 'id' => $id], 200);
         } catch (\Exception $e) {
             return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
