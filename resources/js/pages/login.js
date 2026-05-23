@@ -2,20 +2,16 @@ import Swal from "sweetalert2";
 import Validate from "../components/validate.js";
 import Requests from "../components/requests.js";
 
-Inputmask('999.999.999-99').mask('#cpf');
-Inputmask('(99) 99999-9999').mask('#telefone');
+Inputmask('999.999.999-99').mask('#cad-cpf');
+Inputmask('(99) 99999-9999').mask('#cad-telefone');
 
-const mdPreRegister = document.getElementById('mdPreRegister');
+const mdPreRegister     = document.getElementById('mdPreRegister');
 const buttonPreRegister = document.getElementById('buttonPreRegister');
-const buttonLogin = document.getElementById('buttonLogin');
-
+const buttonLogin       = document.getElementById('buttonLogin');
 
 mdPreRegister.addEventListener('click', () => {
     $('#modalPreRegisterUser').modal('show');
 });
-
-
-
 
 buttonLogin.addEventListener('click', async () => {
     const valid = Validate.SetForm('form').Validate();
@@ -25,84 +21,100 @@ buttonLogin.addEventListener('click', async () => {
             title: 'Ops...',
             text: 'Preencha os campos corretamente!',
             timer: 2500,
-            progressBar: true
+            showConfirmButton: false
         });
         return;
     }
-    const requests = new Requests();
-    const originalText = buttonLogin.textContent;
+
+    const requests    = new Requests();
+    const originalHTML = buttonLogin.innerHTML;
+
     try {
-        buttonLogin.disabled = true;
-        buttonLogin.textContent = 'Autenticando, aguarde...';
+        buttonLogin.disabled  = true;
+        buttonLogin.innerHTML = '<i class="ti ti-loader-2 ti-spin" style="font-size:16px;"></i> Autenticando...';
+
         const response = await requests.setForm('form').post('/authentication/auth');
+
         if (!response.status) {
             Swal.fire({
                 icon: 'error',
                 title: 'Ops...',
-                text: response.msg || 'Não foi possivel validar as credenciais tente novamente mais tarde!',
+                text: response.msg || 'Não foi possível validar as credenciais, tente novamente!',
                 timer: 2500,
-                progressBar: true
+                showConfirmButton: false
             });
             return;
         }
+
         window.location.replace('/');
+
     } catch (error) {
         Swal.fire({
             icon: 'error',
             title: 'Ops...',
-            text: error.message || 'Restrição: tenta de novo depois',
-            timer: 2500,
-            progressBar: true
+            text: error.message || 'Tente novamente mais tarde.',
+            timer: 4000,
+            showConfirmButton: true
         });
-        return;
     } finally {
-        buttonLogin.disabled = false;
-        buttonLogin.textContent = originalText;
+        buttonLogin.disabled  = false;
+        buttonLogin.innerHTML = originalHTML;
     }
 });
 
 buttonPreRegister.addEventListener('click', async () => {
+    const camposModal = [
+        document.getElementById('cad-nome'),
+        document.getElementById('cad-sobrenome'),
+        document.getElementById('cad-cpf'),
+        document.getElementById('cad-senha'),
+    ];
 
-    const validou = Validate.SetForm('form').Validate();
-
-    if (!validou) {
+    const camposVazios = camposModal.some(el => !el.value.trim());
+    if (camposVazios) {
         Swal.fire({
             icon: 'error',
             title: 'Ops...',
-            text: 'Preencha os campos corretamente!',
+            text: 'Preencha os campos obrigatórios: Nome, Sobrenome, CPF e Senha!',
             timer: 2500,
-            progressBar: true
+            showConfirmButton: false
         });
         return;
     }
 
-    const requests = new Requests();
+    const requests     = new Requests();
+    const originalHTML = buttonPreRegister.innerHTML;
 
-    const originalText = buttonPreRegister.textContent;
     try {
-        buttonPreRegister.textContent = 'Cadastrando, por favor aguarde...';
-        buttonPreRegister.disabled = true;
+        buttonPreRegister.disabled  = true;
+        buttonPreRegister.innerHTML = '<i class="ti ti-loader-2 ti-spin"></i> Cadastrando...';
+
         const response = await requests.setForm('form').post('/authentication/preregister');
 
         if (!response.status) {
             Swal.fire({
                 icon: 'error',
                 title: 'Ops...',
-                text: response.message,
+                text: response.msg || 'Não foi possível concluir o cadastro, tente novamente!',
                 timer: 2500,
-                progressBar: true
+                showConfirmButton: false
             });
+            return;
         }
 
-        Swal.fire({
+        await Swal.fire({
             icon: 'success',
             title: 'Sucesso!',
-            text: response.msg,
+            text: response.msg || 'Usuário cadastrado com sucesso!',
             timer: 2500,
-            progressBar: true
-        }).then(() => {
-            $('#modalPreRegisterUser').modal('hide');
+            showConfirmButton: false
         });
+
+        $('#modalPreRegisterUser').modal('hide');
+        camposModal.forEach(el => el.value = '');
+        document.getElementById('cad-rg').value       = '';
+        document.getElementById('cad-email').value    = '';
+        document.getElementById('cad-telefone').value = '';
 
     } catch (error) {
         Swal.fire({
@@ -110,11 +122,10 @@ buttonPreRegister.addEventListener('click', async () => {
             title: 'Ops...',
             text: error.message || 'Ocorreu um erro ao cadastrar o usuário!',
             timer: 2500,
-            progressBar: true
+            showConfirmButton: false
         });
     } finally {
-        buttonPreRegister.disabled = false;
-        buttonPreRegister.textContent = originalText;
+        buttonPreRegister.disabled  = false;
+        buttonPreRegister.innerHTML = originalHTML;
     }
-
 });
