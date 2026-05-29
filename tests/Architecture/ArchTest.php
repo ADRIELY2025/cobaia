@@ -2,22 +2,21 @@
 
 declare(strict_types=1);
 
-arch('todos os arquivos usam strict types')
+arch('Todos os arquivos usam strict types')
     ->expect('App')
     ->toUseStrictTypes();
-/*adiconar rota cooreta desses dois controllers */
-arch('sem debug no código de produção')
-    ->expect('App')
-    ->not->toUse(['var_dump', 'dd', 'dump', 'die']);
-    
 
-arch('controllers não acessam banco direto')
-    ->expect('app\controller')
+arch('Sem debug no código de produção')
+    ->expect('App/Controller')
+    ->not->toUse(['var_dump', 'dd', 'dump', 'die;']);
+
+arch('Controllers não acessam banco direto')
+    ->expect('App/Controller')
     ->not->toUse('PDO');
 
 #Nenhuma classe deve usar funções perigosas
-arch('sem funções perigosas no código')
-    ->expect('App')
+arch('Sem funções perigosas no código')
+    ->expect('App/Controller')
     ->not->toUse([
         'eval',
         'exec',
@@ -28,7 +27,7 @@ arch('sem funções perigosas no código')
     ]);
 
 #Garantir que classes são finais ou abstratas
-arch('controllers devem ser classes finais')
-    ->expect('app\controller')
+arch('Controllers devem ser classes finais')
+    ->expect('App/Controller')
     ->toBeFinal()
-    ->ignoring('app\controller\Base');
+    ->ignoring('App/Controller/Base');

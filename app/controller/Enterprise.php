@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\controller;
+namespace App\Controller;
 
 final class Enterprise extends Base
 {
@@ -37,6 +37,9 @@ final class Enterprise extends Base
             ->withHeader('Content-Type', 'text/html')
             ->withStatus(200);
     }
+
+   
+
     public function insert($request, $response)
     {
         $form = $request->getParsedBody();
@@ -48,6 +51,9 @@ final class Enterprise extends Base
             #'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
             'ativo' => ($form['ativo'] === 'true') ? true : false
         ];
+
+
+         
         try {
             $IsInserted = \app\database\DB::connection()->insert('enterprise', $FieldsAndValues);
             if (!$IsInserted) {

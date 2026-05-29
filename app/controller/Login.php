@@ -1,6 +1,6 @@
 <?php
 
-namespace app\controller;
+namespace App\Controller;
 
 final class Login extends Base
 {
@@ -14,7 +14,6 @@ final class Login extends Base
                 ->withHeader('Content-Type', 'text/html')
                 ->withStatus(200);
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
         }
     }
     public function authenticate($request, $response)

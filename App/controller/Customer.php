@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\controller;
+namespace App\Controller;
 
 final class Customer extends Base
 {
@@ -41,6 +41,7 @@ final class Customer extends Base
 
     public function insert($request, $response)
     {
+
         $form = $request->getParsedBody();
         $FieldsAndValues = [
             'nome_fantasia' => $form['nomeExibicao'],
@@ -77,6 +78,7 @@ final class Customer extends Base
             'nascimento_fundacao' => $this->convertBrDateToDatabaseFormat($form['dataRegistro']),
             'ativo' => ($form['ativo'] === 'true') ? true : false
         ];
+       
         try {
             $IsUpdated = \app\database\DB::connection()->update('customer', $FieldsAndValues, ['id' => $id]);
             if (!$IsUpdated) {
@@ -87,6 +89,8 @@ final class Customer extends Base
             return $this->json($response, ['status' => false, 'msg' => 'Restrição: ' . $e->getMessage(), 'id' => 0], 500);
         }
     }
+
+
     public function delete($request, $response)
     {
         $form = $request->getParsedBody();

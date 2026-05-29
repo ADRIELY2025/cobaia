@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace app\database;
+namespace App\Database;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -11,7 +11,7 @@ final class DB
     # Retorna um QueryBuilder com SELECT já configurado. Sem argumentos seleciona tudo ('*').
     public static function select(string ...$columns): QueryBuilder
     {
-        $qb = Connection::get()->createQueryBuilder();
+        $qb = App\Database\Connection::get()->createQueryBuilder();
 
         return empty($columns)
             ? $qb->select('*')
@@ -21,7 +21,7 @@ final class DB
     # Retorna a conexão DBAL para operações de escrita (insert, update, delete, transação, execute).
     public static function connection(): \Doctrine\DBAL\Connection
     {
-        return Connection::get();
+        return App\Database\Connection::get();
     }
 
     # Previne instanciação — uso exclusivo via métodos estáticos

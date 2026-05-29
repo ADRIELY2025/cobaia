@@ -2,59 +2,59 @@
 
 declare(strict_types=1);
 
-$app->get('/', app\controller\Home::class . ':home')->add(app\middleware\Middleware::web());
-$app->get('/home', app\controller\Home::class . ':home')->add(app\middleware\Middleware::web());
-$app->get('/login', app\controller\Login::class . ':login')->add(app\middleware\Middleware::web());
+$app->get('/', App\Controller\Home::class . ':home')->add(App\Middleware\Middleware::web());
+$app->get('/home', App\Controller\Home::class . ':home')->add(App\Middleware\Middleware::web());
+$app->get('/login', App\Controller\Login::class . ':login')->add(App\Middleware\Middleware::web());
 
 $app->group('/authentication', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/logout', app\controller\Login::class . ':logout');
-    $group->post('/google', app\controller\Login::class . ':google');
-    $group->post('/auth', app\controller\Login::class . ':authenticate');
-    $group->post('/preregister', app\controller\Login::class . ':preRegister');
+    $group->get('/logout', App\Controller\Login::class . ':logout');
+    $group->post('/google', App\Controller\Login::class . ':google');
+    $group->post('/auth', App\Controller\Login::class . ':authenticate');
+    $group->post('/preregister', App\Controller\Login::class . ':preRegister');
 });
 
 $app->group('/cliente', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Customer::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Customer::class . ':details');
-    $group->get('/detalhes', app\controller\Customer::class . ':details');
-    $group->post('/insert', app\controller\Customer::class . ':insert');
-    $group->post('/update', app\controller\Customer::class . ':update');
-    $group->post('/delete', app\controller\Customer::class . ':delete');
-    $group->post('/listingdata', app\controller\Customer::class . ':listingdata');
+    $group->get('/lista', App\Controller\Customer::class . ':list');
+    $group->get('/detalhes/{id}', App\Controller\Customer::class . ':details');
+    $group->get('/detalhes', App\Controller\Customer::class . ':details');
+    $group->post('/insert', App\Controller\Customer::class . ':insert');
+    $group->post('/update', App\Controller\Customer::class . ':update');
+    $group->post('/delete', App\Controller\Customer::class . ':delete');
+    $group->post('/listingdata', App\Controller\Customer::class . ':listingdata');
 });
 $app->group('/empresa', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Enterprise::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Enterprise::class . ':details');
-    $group->get('/detalhes', app\controller\Enterprise::class . ':details');
-    $group->post('/insert', app\controller\Enterprise::class . ':insert');
-    $group->post('/update', app\controller\Enterprise::class . ':update');
-    $group->post('/delete', app\controller\Enterprise::class . ':delete');
-    $group->post('/listingdata', app\controller\Enterprise::class . ':listingdata');
+    $group->get('/lista', App\Controller\Enterprise::class . ':list');
+    $group->get('/detalhes/{id}', App\Controller\Enterprise::class . ':details');
+    $group->get('/detalhes', App\Controller\Enterprise::class . ':details');
+    $group->post('/insert', App\Controller\Enterprise::class . ':insert');
+    $group->post('/update', App\Controller\Enterprise::class . ':update');
+    $group->post('/delete', App\Controller\Enterprise::class . ':delete');
+    $group->post('/listingdata', App\Controller\Enterprise::class . ':listingdata');
 });
 $app->group('/fornecedor', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Supplier::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Supplier::class . ':details');
-    $group->get('/detalhes', app\controller\Supplier::class . ':details');
-    $group->post('/insert', app\controller\Supplier::class . ':insert');
-    $group->post('/update', app\controller\Supplier::class . ':update');
-    $group->post('/delete', app\controller\Supplier::class . ':delete');
-    $group->post('/listingdata', app\controller\Supplier::class . ':listingdata');
+    $group->get('/lista', App\Controller\Supplier::class . ':list');
+    $group->get('/detalhes/{id}', App\Controller\Supplier::class . ':details');
+    $group->get('/detalhes', App\Controller\Supplier::class . ':details');
+    $group->post('/insert', App\Controller\Supplier::class . ':insert');
+    $group->post('/update', App\Controller\Supplier::class . ':update');
+    $group->post('/delete', App\Controller\Supplier::class . ':delete');
+    $group->post('/listingdata', App\Controller\Supplier::class . ':listingdata');
 });
 $app->group('/usuario', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Users::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Users::class . ':details');
-    $group->get('/detalhes', app\controller\Users::class . ':details');
-    $group->post('/insert', app\controller\Users::class . ':insert');
-    $group->post('/update', app\controller\Users::class . ':update');
-    $group->post('/delete', app\controller\Users::class . ':delete');
-    $group->post('/listingdata', app\controller\Users::class . ':listingdata');
+    $group->get('/lista', App\Controller\Users::class . ':list');
+    $group->get('/detalhes/{id}', App\Controller\Users::class . ':details');
+    $group->get('/detalhes', App\Controller\Users::class . ':details');
+    $group->post('/insert', App\Controller\Users::class . ':insert');
+    $group->post('/update', App\Controller\Users::class . ':update');
+    $group->post('/delete', App\Controller\Users::class . ':delete');
+    $group->post('/listingdata', App\Controller\Users::class . ':listingdata');
 });
 $app->group('/produto', function (Slim\Routing\RouteCollectorProxy $group) {
-    $group->get('/lista', app\controller\Product::class . ':list');
-    $group->get('/detalhes/{id}', app\controller\Product::class . ':details');
-    $group->get('/detalhes', app\controller\Product::class . ':details');
-    $group->post('/insert', app\controller\Product::class . ':insert');
-    $group->post('/update', app\controller\Product::class . ':update');
-    $group->post('/delete', app\controller\Product::class . ':delete');
-    $group->post('/listingdata', app\controller\Product::class . ':listingdata');
+    $group->get('/lista', App\Controller\Product::class . ':list');
+    $group->get('/detalhes/{id}', App\Controller\Product::class . ':details');
+    $group->get('/detalhes', App\Controller\Product::class . ':details');
+    $group->post('/insert', App\Controller\Product::class . ':insert');
+    $group->post('/update', App\Controller\Product::class . ':update');
+    $group->post('/delete', App\Controller\Product::class . ':delete');
+    $group->post('/listingdata', App\Controller\Product::class . ':listingdata');
 });
