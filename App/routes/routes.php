@@ -58,3 +58,16 @@ $app->group('/produto', function (Slim\Routing\RouteCollectorProxy $group) {
     $group->post('/delete', App\Controller\Product::class . ':delete');
     $group->post('/listingdata', App\Controller\Product::class . ':listingdata');
 });
+
+$app->group('/venda', function (Slim\Routing\RouteCollectorProxy $group) {
+
+    $group->get('/cadastro', \App\Controller\Sale::class . ':lista');
+    $group->get('/detalhes/{id}', \App\Controller\Sale::class . ':alterar');
+    $group->get('/detalhes', \App\Controller\Sale::class . ':alterar');
+
+    $group->post('/insert', \App\Controller\Sale::class . ':insert');
+    $group->post('/update', \App\Controller\Sale::class . ':update');
+    $group->post('/delete', \App\Controller\Sale::class . ':delete');
+
+    $group->post('/listingdata', \App\Controller\Sale::class . ':listingdata');
+});

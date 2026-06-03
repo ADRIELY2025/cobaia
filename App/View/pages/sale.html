@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Comércio - Gestão de Vendas</title>
+
+    {% include "css.html" %}
+    <link rel="stylesheet" href="/css/sale.css">
+</head>
+
+<body>
+
+<!-- MODAL PESQUISA PRODUTO -->
+<div class="modal fade" id="pesquisaProdutoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pesquisa de produto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-sm">
+                    <tbody id="modal-produtos"></tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PAGAMENTO -->
+<div class="modal fade" id="pagamentoVenda" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Pagamento da venda</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label>Condição de pagamento</label>
+                        <select class="form-select" id="condicaoPagamento"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Valor pago</label>
+                        <input type="text" class="form-control" id="valorPago" value="0,00">
+                    </div>
+                </div>
+
+                <div class="row g-2 mt-3 d-none" id="parcelamento">
+                    <div class="col-md-6">
+                        <label>Parcelas</label>
+                        <select class="form-select" id="parcelas"></select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label>Dia vencimento</label>
+                        <input type="number" class="form-control" id="diaVencimento">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-finalize">Concluir venda</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<aside class="sidebar">
+    <div class="logo-section">
+        <h1 class="logo">Obrigado</h1>
+        <p class="slogan">Sua preferência é a nossa motivação.</p>
+    </div>
+</aside>
+
+<main class="main-content">
+
+<header class="header">
+    <div>
+        <h2>Sistema Comércio</h2>
+        <small>Gestão de Vendas</small>
+    </div>
+</header>
+
+<div class="content-wrapper">
+
+<section class="products-section">
+
+<form id="form">
+
+    <input type="hidden" id="acao" name="acao" value="{{acao}}">
+    <input type="hidden" id="id" name="id" value="{{id}}">
+    <input type="hidden" id="totalBruto" name="totalBruto">
+    <input type="hidden" id="totalLiquido" name="totalLiquido">
+    <input type="hidden" id="id_item" name="id_item">
+
+    <h3>Buscar produto</h3>
+
+    <div class="input-group">
+
+        <select class="form-select" id="pesquisa" name="pesquisa"></select>
+
+        <button type="button"
+                class="btn btn-outline-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#pesquisaProdutoModal">
+            Buscar (F4)
+        </button>
+
+        <button type="button"
+                class="btn btn-success"
+                id="insertItemButton">
+            Inserir (F9)
+        </button>
+
+    </div>
+
+</form>
+
+<div class="products-list">
+
+    <div class="products-header">
+        <h3>Itens da venda</h3>
+        <span id="product-count">0</span>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Total</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+
+        <tbody id="products-table-tbody"></tbody>
+    </table>
+
+</div>
+
+</section>
+
+<aside class="cart-section">
+
+    <div class="total-section">
+        <div>
+            <span>Subtotal:</span>
+            <span id="amount">R$ 0,00</span>
+        </div>
+
+        <div>
+            <span>Total:</span>
+            <span id="total-amount">R$ 0,00</span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+
+        <button class="btn btn-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#pagamentoVenda">
+            Finalizar venda
+        </button>
+
+        <button class="btn btn-danger">
+            Cancelar venda
+        </button>
+
+    </div>
+
+</aside>
+
+</div>
+
+</main>
+
+{% include "script.html" %}
+<script type="module" src="/js/sale.js"></script>
+
+</body>
+</html>
